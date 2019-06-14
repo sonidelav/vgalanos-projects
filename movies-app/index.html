@@ -1,68 +1,67 @@
-
 <!DOCTYPE html>
 <html>
 <head>
-  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
-  <title>Online Movies Application based on vue.js</title>
+	<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+	<title>Online Movies Application based on vue.js</title>
 
-  <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/mootools/1.4.5/mootools-core-full-compat.min.js'></script>
-  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mootools-more/1.4.0.1/mootools-more-yui-compressed.min.js"></script>
-  <script type='text/javascript' src="https://cdnjs.cloudflare.com/ajax/libs/vue/1.0.10/vue.js"></script>
+	<script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/mootools/1.4.5/mootools-core-full-compat.min.js'></script>
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mootools-more/1.4.0.1/mootools-more-yui-compressed.min.js"></script>
+	<script type='text/javascript' src="https://cdnjs.cloudflare.com/ajax/libs/vue/1.0.10/vue.js"></script>
 
-  <style type='text/css'>
-    * { padding:0px; margin:0px; outline:none; }
+	<style type='text/css'>
+	* { padding:0px; margin:0px; outline:none; }
 
-		p.note {
-			padding: 10px 1%;
-			color: #555;
+	p.note {
+		padding: 10px 1%;
+		color: #555;
+		font-weight: bold;
+		font: 'Segoe UI', monospace;
+	}
+	a {
+		text-decoration: none;
+		display: inline-block;
+	}
+
+	a.button {
+			transition: all 1s ease;
+			padding: 1% 10% 1% 1%;
+			text-align: left !important;
 			font-weight: bold;
-			font: 'Segoe UI', monospace;
-		}
-		a {
-			text-decoration: none;
-			display: inline-block;
-		}
-
-		a.button {
-				transition: all 1s ease;
-				padding: 1% 10% 1% 1%;
-				text-align: left !important;
-				font-weight: bold;
-				font-size: 12pt;
-				background-color: transparent;
-				border: none;
-				color: #666;
-		}
-		a.button:hover {
-				background-color: #888;
-				padding-left: +9%;
-				cursor: pointer;
-				color: #eee;
-		}
-
-		section#app {
-			padding: 20px;
-			background-color: #333;
-			color: #eee;
 			font-size: 12pt;
-			position: fixed;
-			top: 0px; bottom: 0px;
-			left: 0px; right: 0px;
-			overflow: scroll;
-		}
+			background-color: transparent;
+			border: none;
+			color: #666;
+	}
+	a.button:hover {
+			background-color: #888;
+			padding-left: +9%;
+			cursor: pointer;
+			color: #eee;
+	}
 
-		div.container {
-			padding: 5px;
-		}
-		ul {
-			list-style: none;
-			overflow: auto;
-		}
-		ul.list li {
-			overflow: auto;
-		}
-  </style>
-  <style>
+	section#app {
+		padding: 20px;
+		background-color: #333;
+		color: #eee;
+		font-size: 12pt;
+		position: fixed;
+		top: 0px; bottom: 0px;
+		left: 0px; right: 0px;
+		overflow: scroll;
+	}
+
+	div.container {
+		padding: 5px;
+	}
+	ul {
+		list-style: none;
+		overflow: auto;
+	}
+	ul.list li {
+		overflow: auto;
+	}
+	</style>
+	<style>
 		.movies {
 
 		}
@@ -79,162 +78,158 @@
 		}
 	</style>
 </head>
-
 <body>
-  <section id="app">
+<section id="app">
+	<div class="container">
+		<p class="note">Call Application TO Service:</p>
+		<ul class="list">
+			<li><a href="javascript:void(0)" class="button">Movies</a></li>
+		</ul>
+	</div>
+	<movies></movies>
+</section>
+<script type='text/javascript'>
+(function(w, mtools, Vue) {
+	if(console && console.clear()) {
+		console.clear();
+	}
+	if (!mtools || !Vue)
+		throw new Error('Libraries Missing!');
 
-		<div class="container">
-				<p class="note">Call Application TO Service:</p>
-				<ul class="list">
-					<li><a href="javascript:void(0)" class="button">Movies</a></li>
-				</ul>
-		</div>
-
-		<movies></movies>
-	</section>
-
-	<script type='text/javascript'>
-	(function(w, mtools, Vue) {
-		if(console && console.clear()) {
-			console.clear();
+	var Consts = {
+		//'service-url': 'http://tainies.online',
+		'service-url' : 'http://v-galanos.work/projects/services/movies',
+		'service-pagination-params': {
+			//'_token': '',
+			'perPage': 20,
+			'page': 1,
+			'type': 'movie', // or series
+			'order': 'link_updatedDesc',
+			//'genres': [],
+			'minRating': null,
+			'maxRating': null,
+			'language': null
 		}
-		if (!mtools || !Vue)
-			throw new Error('Libraries Missing!');
+	};
 
-		var Consts = {
-			//'service-url': 'http://tainies.online',
-			'service-url' : 'http://v-galanos.work/projects/services/movies',
-			'service-pagination-params': {
-				//'_token': '',
-				'perPage': 20,
-				'page': 1,
-				'type': 'movie', // or series
-				'order': 'link_updatedDesc',
-				//'genres': [],
-				'minRating': null,
-				'maxRating': null,
-				'language': null
-			}
-		};
+	var Service = new mtools.Class({
+		Implements: [Options],
 
-		var Service = new mtools.Class({
-			Implements: [Options],
+		initialize: function(opt) {
+			var _service = this;
+			_service.setOptions(opt);
+		},
 
-			initialize: function(opt) {
-				var _service = this;
-				_service.setOptions(opt);
-			},
-
-			call: function(method, params, callback) {
-				var _service = this;
-				var _request = new mtools.Request({
-					url: Consts['service-url'] + '/' + method,
-					data: params,
-					method: 'post',
-					'onSuccess': function(response) {
-						if (callback) callback.call(_service, response, params);
-					},
-					'onFailure': function(xhr) {
-						throw new Error('Request Failed Status = ' + xhr.status);
-						// Callback(Response, Data, Exception)
-						if (callback)
-							callback.call(_service, xhr.responseText, params, 'Request Failed');
-					}
-				});
-				delete _request.headers['X-Requested-With'];
-				return _request;
-			},
-
-			getPaginatedMovies: function(callback, data) {
-				var _service = this;
-				var _r_data = mtools.Object.merge(Consts['service-pagination-params'], data || {});
-				// TO Service Request
-				_service.call('titles/paginate', _r_data, callback).send();
-			}
-
-		});
-		var service = new Service();
-
-		var MoviesStore = function() {
-			var self = {
-				'pagination': {
-					'page': 1,
-					'perPage': 20,
-					'totalItems': null,
-					'totalPages': null
+		call: function(method, params, callback) {
+			var _service = this;
+			var _request = new mtools.Request({
+				url: Consts['service-url'] + '/' + method,
+				data: params,
+				method: 'post',
+				'onSuccess': function(response) {
+					if (callback) callback.call(_service, response, params);
 				},
-				'movies': [],
-				'errors': [],
-				'setMovies': function(movies) {
-					var store = this;
-					movies.each(function(item) {
-						store.movies.push(item);
-					});
+				'onFailure': function(xhr) {
+					throw new Error('Request Failed Status = ' + xhr.status);
+					// Callback(Response, Data, Exception)
+					if (callback)
+						callback.call(_service, xhr.responseText, params, 'Request Failed');
 				}
-			};
-
-			// Load
-			service.getPaginatedMovies(function(response, data, exception) {
-				var response = JSON.parse(response).response;
-				self.setMovies(response.items);
-				// Paginator
-				self.pagination.page = response.page;
-				self.pagination.perPage = response.perPage;
-				self.pagination.totalItems = response.totalItems;
-				self.pagination.totalPages = response.totalPages;
 			});
+			delete _request.headers['X-Requested-With'];
+			return _request;
+		},
 
-			return self;
+		getPaginatedMovies: function(callback, data) {
+			var _service = this;
+			var _r_data = mtools.Object.merge(Consts['service-pagination-params'], data || {});
+			// TO Service Request
+			_service.call('titles/paginate', _r_data, callback).send();
+		}
+
+	});
+	var service = new Service();
+
+	var MoviesStore = function() {
+		var self = {
+			'pagination': {
+				'page': 1,
+				'perPage': 20,
+				'totalItems': null,
+				'totalPages': null
+			},
+			'movies': [],
+			'errors': [],
+			'setMovies': function(movies) {
+				var store = this;
+				movies.each(function(item) {
+					store.movies.push(item);
+				});
+			}
 		};
 
-		var lstore = new MoviesStore();
+		// Load
+		service.getPaginatedMovies(function(response, data, exception) {
+			var response = JSON.parse(response).response;
+			self.setMovies(response.items);
+			// Paginator
+			self.pagination.page = response.page;
+			self.pagination.perPage = response.perPage;
+			self.pagination.totalItems = response.totalItems;
+			self.pagination.totalPages = response.totalPages;
+		});
 
-        var app = new Vue({
-            el: '#app',
-            components: {
-                'movies': {
-                    template:
-                        '<div>' +
-                            '<h1>Page {{page}}</h1>' +
-                            '<ul class="movies">' +
-                                '<li v-for="item in movies">' +
-                                    '<movie :item="item"></movie>' +
-                                '</li>' +
-                            '</ul>' +
-                        '</div>',
-                    data: function () {
-                        return {
-                            'movies': lstore.movies,
-                            'page': lstore.pagination.page
-                        }
-                    },
-                    components: {
-                        'movie': {
-                            template:
-                                '<div class="movie">' +
-                                '<img :src="item.poster" style="width:auto;height:100%;">' +
-                                    //'<div class="poster" :style="{\'background-image\' : backgroundUrl}">' +
-                                        //'<h3>{{item.title}}</h3>' +
-                                        //'<p>{{item.plot}}</p>' +
-                                    '</div>' +
-                                '</div>',
+		return self;
+	};
 
-                            props: {
-                                'item': Object
-                            },
+	var lstore = new MoviesStore();
 
-                            computed: {
-                                backgroundUrl: function () {
-                                    return 'url("' + this.item.poster + '")';
-                                }
-                            },
-                        },
-                    }
-                }
-            }
-        });
+	var app = new Vue({
+		el: '#app',
+		components: {
+			'movies': {
+				template:
+					'<div>' +
+						'<h1>Page {{page}}</h1>' +
+						'<ul class="movies">' +
+							'<li v-for="item in movies">' +
+								'<movie :item="item"></movie>' +
+							'</li>' +
+						'</ul>' +
+					'</div>',
+				data: function () {
+					return {
+						'movies': lstore.movies,
+						'page': lstore.pagination.page
+					}
+				},
+				components: {
+					'movie': {
+						template:
+							'<div class="movie">' +
+							'<img :src="item.poster" style="width:auto;height:100%;">' +
+								//'<div class="poster" :style="{\'background-image\' : backgroundUrl}">' +
+									//'<h3>{{item.title}}</h3>' +
+									//'<p>{{item.plot}}</p>' +
+								'</div>' +
+							'</div>',
 
-	})(this, Class!==undefined ? this : null, Vue);
-	</script>
+						props: {
+							'item': Object
+						},
+
+						computed: {
+							backgroundUrl: function () {
+								return 'url("' + this.item.poster + '")';
+							}
+						},
+					},
+				}
+			}
+		}
+	});
+
+})(this, Class!==undefined ? this : null, Vue);
+</script>
 </body>
 </html>
