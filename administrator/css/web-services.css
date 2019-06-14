@@ -1,0 +1,16 @@
+#services-board
+{
+    overflow:auto;
+}
+#services-board .services-header {
+    padding: 4px 10px;
+}
+#services-board ul {
+    list-style: none;
+    margin: 0px; padding: 0px;
+    overflow: auto;
+}
+#services-board ul li {
+    float: left;
+    margin: 2px 4px;
+}

@@ -1,0 +1,12 @@
+<div id="services-board">
+    <div class="services-header pull-left">
+        <span class="icon-globe"></span>
+    </div>
+    
+    <ul data-bind="foreach: loaded" class="pull-left">
+        <li>
+            <a class="btn btn-mini btn-link"
+               data-bind="text: $data.options().name"></a>
+        </li>
+    </ul>
+</div>

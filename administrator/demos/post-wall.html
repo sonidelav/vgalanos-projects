@@ -1,0 +1,109 @@
+<div class="container-fluid">
+    <div class="row-fluid">
+        
+        
+        <div class="span12">
+            <h1>Post Wall <code>demo 1.0.0</code></h1>
+            
+            <div id="wall">
+                <div class="post-form">
+                    
+                    <ul class="nav nav-tabs">
+                        <li><a href="#msg" data-toggle="tab">Message</a></li>
+                        <li><a href="#youtube" data-toggle="tab">YouTube</a></li>
+                    </ul>
+                    
+                    <div class="tab-content">
+                        <div class="tab-pane active" id="msg">
+                            <form id="post-msg-form" class="form-inline text-center">
+                                <input type="text" placeholder="enter a post..."
+                                       class="input-xxlarge" data-bind="value:postMsg">
+                                <button type="button" class="btn"
+                                        data-bind="click:doPost">post</button>
+                            </form>
+                        </div>
+                        <div class="tab-pane" id="youtube">
+                            <form id="post-ytube-form" class="form-inline text-center">
+                                <input type="text" placeholder="https://www.youtube.com/watch?v=..."
+                                       class="input-xxlarge" data-bind="value:postMsg">
+                                <button type="button" class="btn"
+                                        data-bind="click:doPostYoutube">post</button>
+                            </form>
+                        </div>
+                    </div>
+
+                </div>
+                <!-- ko if: (posts().length > 0) -->
+                <ul style="list-style:none;margin:0px;">
+                    <!-- ko foreach: posts -->
+                    <li>
+                        <div class="post well well-small" style="padding: 10px 50px;"
+                             data-bind="html:content"></div>
+                    </li>
+                    <!-- /ko -->
+                </ul>
+                <!-- /ko -->
+                
+            </div>
+        </div>
+        
+        
+    </div>
+</div>
+<script>
+    (function(win){
+        var $ = win.jQuery;
+        var ko = win.ko;
+        var APP = win.APP;
+        
+        /*
+         * Post
+         */
+        var Post = function(value) {
+            var self = this;
+            self['content'] = ko.observable(value);
+        };
+        /*
+         * Post Manager
+         */
+        var PostManager = function() {
+            var self = this;
+            self['posts'] = ko.observableArray();
+            self['postMsg'] = ko.observable();
+            
+            self['doPost'] = function(){
+                var p = new Post(self.postMsg());
+                self.posts.push(p);
+                self.postMsg('');
+            };
+            
+            self['doPostYoutube'] = function(){
+                var url = self.postMsg();
+                var demo = 'https://www.youtube.com/watch?v=q3ymA5Clw8s';
+                var fidx = url.indexOf('=');
+                var ytubeVideo = url.substr(fidx+1);
+                var d = 'http://www.youtube.com/embed/' + ytubeVideo;
+                var $el = $('<iframe>').attr({
+                    'width' : '380px',
+                    'height': '240px',
+                    'src': d,
+                    'allowfullscreen':true
+                }).css({
+                    'border':'none',
+                    'padding': '4px',
+                    'margin-left': '-210px',
+                    'left': '50%',
+                    'position': 'relative'
+                });
+                var p = new Post($el[0].outerHTML);
+                self.posts.push(p);
+                self.postMsg('');
+            };
+        };
+        
+        var postManager = new PostManager;
+        
+        ko.applyBindings(postManager, $('#wall')[0]);
+        
+    })(this);
+</script>

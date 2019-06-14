@@ -1,0 +1,58 @@
+body {
+    background-color: #f5f5f5;
+}
+
+ul.posts {
+    overflow:auto;
+    list-style:none;
+    margin:0px;
+    padding:0px;
+}
+ul.posts li {
+    width: 100%;
+    padding: 10px;
+}
+ul.posts li .post {
+    padding: 4px;
+    border: solid 1px #e5e5e5;
+    border-radius: 8px;
+    -moz-border-radius: 8px;
+    -webkit-border-radius: 8px;
+    
+    background-color:#fff;
+}
+
+ul.posts li .post .header {
+    overflow: auto;
+    padding: 4px 8px;
+    border-bottom: 1px solid #e5e5e5;
+}
+ul.posts li .post .header > * {float:left;}
+ul.posts li .post > img {
+    width: 300px; height: auto;
+    padding: 10px;
+    margin:0px auto;
+    display:block;
+}
+ul.posts li .post .header img {
+    width: 48px;
+}
+ul.posts li .post .header .name {
+    margin-top: 2px;
+    padding-left: 10px;
+}
+ul.posts li .post .header .story {
+    float:right;
+    margin-top: 2px;
+}
+
+ul.posts li .post .caption,
+ul.posts li .post .message {
+    padding: 5px 10px;
+    font-size: 15px;
+}
+
+.profile-picture {
+    float: left;
+    padding: 5px 10px 5px 2px;
+}

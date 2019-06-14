@@ -1,0 +1,27 @@
+<div class="container-fluid">
+    
+    <div class="row-fluid">
+        
+        <div class="well">
+            <h1>Welcome</h1>
+            <p>
+                This is a HTML5 application with <code>knockout.js, bootstrap, jquery</code>.<br/>
+                <h6>Asynchronize JS Application</h6>
+            </p>
+        </div>
+        
+        <div class="navigation">
+            <h3>Demos</h3>
+            <ul id="demos-navigation" class="nav nav-pills nav-stacked">
+                <!-- ko foreach: toolbar.demos -->
+                <li>
+                    <a href="#" data-bind="text:$data.name,click:$data.run"></a>
+                </li>
+                <!-- /ko -->
+            </ul>
+        </div>
+        
+        
+    </div>
+    
+</div>

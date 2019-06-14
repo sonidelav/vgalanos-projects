@@ -1,0 +1,21 @@
+.navbar .navbar-inner {
+    border-radius: 0px;
+    -webkit-border-radius: 0px;
+    -moz-border-radius: 0px;
+    
+    background-color: #E5E5E5;
+    background-image: none !important;
+    color: #FFF;
+}
+
+.navbar .brand {
+    color: #333;
+}
+.navbar .nav > li > a
+{
+    color: #aaa;
+    text-shadow: 0px 1px 0px #ddd;
+}
+.navbar .nav > li > a.active {
+    color: #333;
+}

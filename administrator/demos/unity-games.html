@@ -1,0 +1,36 @@
+<div class="container-fluid">
+    <div class="row-fluid">
+        <div class="span12">
+            <h1>Unity Web Player <span class="label label-warning">plugin requirement!</span></h1>
+            <div id="unityPlayer" style="margin:0px auto; width:100%; height:600px;"></div>
+        </div>
+    </div>
+</div>
+<script>
+(function(win){
+    var $ = win.jQuery;
+    var APP = win.APP;
+    
+    APP.loader.loadScript('http://webplayer.unity3d.com/download_webplayer-3.x/3.0/uo/UnityObject.js',function(){
+        setTimeout(function(){
+            if(typeof unityObject != "undefined") {
+                
+                var width = $('#unityPlayer').width();
+                
+                unityObject.embedUnity('unityPlayer', 
+                    'http://www.online3dgames.net/content/games/freemadbording.unity3d',
+                    //'http://www.online3dgames.net/content/games/hide-and-seek.unity3d',
+                    width, 600);
+            }
+        }, 1000);
+    });
+    
+    win['GetUnity'] = function() {
+        if(typeof unityObject != "undefined") {
+            return unityObject.getObjetById("unityPlayer");
+        }
+        return null;
+    };
+    
+})(this);
+</script>

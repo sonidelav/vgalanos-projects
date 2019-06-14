@@ -1,0 +1,38 @@
+<div class="container-fluid" id="google-earth-demo">
+    <div class="row-fluid">
+        <div class="span12">
+            <h1>Google Earth <code>demo 1.0.0</code></h1>
+            
+            <div id="map3d" style="width:100%;height:450px;"></div>
+        </div>
+    </div>
+</div>
+<script>
+    (function(win){
+        var $ = win.jQuery;
+        var ko = win.ko;
+        var APP = win.APP;
+        
+        win.googleJSload = function() {
+            
+            var onloadCB = function(){
+                google.earth.createInstance('map3d', function(instance){
+                    var ge = instance;
+                    ge.getWindow().setVisibility(true);
+                    console.log('Google Earth instance created!');
+                    
+                }, function(errorCode){
+                    console.log('Error: ' + errorCode);
+                });
+            };
+            
+            google.load("earth","1", {'callback': onloadCB });
+            console.debug('Google JS API loaded!');
+        };
+        
+        APP.core.thirdParty.loadLib('Google JS API');
+        setTimeout(function(){
+            googleJSload();
+        }, 1000);
+    })(this);
+</script>

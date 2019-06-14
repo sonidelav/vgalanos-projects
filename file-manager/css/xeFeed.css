@@ -1,0 +1,66 @@
+body {
+    background-color: #f5f5f5;
+}
+
+#xeFeed {
+}
+.elements > .rContainer
+{
+    padding: 10px;
+    margin-bottom: 5px;
+    border: solid 1px #ddd;
+    border-radius: 8px;
+    box-shadow: 1px 1px 2px #888;
+    background-color: #fff;
+    overflow:auto;
+    zoom:1;
+    display: none;
+}
+
+.elements > .rContainer > div {
+    float:left;
+}
+
+.xeRelative {
+    position: relative;
+    top: 0px;
+    bottom:0px;
+}
+
+.rSummary, .rImage {
+    padding: 10px;
+}
+.rSummary p {
+    margin-top: 10px;
+    padding-left: 20px;
+    width: 600px;
+}
+.rSummary .areaLabel {
+    font-weight: bold;
+    color: #fff;
+    font-size: 15px;
+}
+.rSummary .rPriceLabel {
+    color:#fff;
+    font-weight: bold;
+    font-size: 15px;
+    float:right;
+}
+.rSummary .rHeading h2 {
+    font-size: 20px;
+    margin: 0px;
+}
+.rSummary .rHeading h2 a {
+    color: #ddd;
+}
+.rSummary .rHeading h2:hover a {
+    color: #fff;
+    text-decoration: none;
+}
+.rImage img {
+    display:none;
+}
+
+.container-fluid {
+    padding: 0px;
+}

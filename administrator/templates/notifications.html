@@ -1,0 +1,19 @@
+<ul class="notifications">
+    <li class="notify-header">
+        <div style="padding: 2px 10px;overflow:auto" class="pull-right">
+            <span class="icon icon-tasks"></span> <span>Notifications</span>
+        </div>
+    </li>
+    
+    <!-- ko foreach: $root.notices -->
+    <li class="notice">
+        <div class="notice-wrapper">
+            <div class="notice-header">
+                <h4 class="pull-left" data-bind="text:title"></h4>
+                <a href="#" class="pull-right" data-bind="click:closeMe">&times;</a>
+            </div>
+            <div class="notice-text" data-bind="html: message"></div>
+        </div>
+    </li>
+    <!-- /ko -->
+</ul>

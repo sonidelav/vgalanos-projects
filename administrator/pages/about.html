@@ -1,0 +1,115 @@
+<div class="container-fluid">
+
+    
+
+    <div class="row-fluid" id="about-page">
+
+        <div class="span12">
+
+            
+
+            <h2>about</h2>
+
+            <table class="table table-condensed">
+
+                <tbody>
+
+                    <tr>
+
+                        <th>author:</th><td data-bind="text:release.author"></td>
+
+                    </tr>
+
+                    <tr>
+
+                        <th>version:</th>
+
+                        <td>
+
+                            <span data-bind="text:release.version"></span>
+
+                            <small class="muted" data-bind="text:release.codename"></small>
+
+                        </td>
+
+                    </tr>
+
+                    <tr>
+
+                        <th>facebook:</th>
+
+                        <td><a target="_blank"
+
+                               data-bind="attr:{href:release.facebook},text:release.facebook"></a></td>
+
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+
+
+            <h2>loaded modules</h2>
+
+            <table class="table table-condensed table-hover">
+
+                <thead><tr><th>Name</th><th>Source</th></tr></thead>
+
+                <tbody>
+
+                    <!-- ko foreach: modules.loaded -->
+
+                    <tr>
+
+                        <td data-bind="text: name"></td>
+
+                        <td><a data-bind="attr: { href: src, target: '_blank' }, text: src"></a></td>
+
+                    </tr>
+
+                    <!-- /ko -->
+
+                </tbody>
+
+            </table>
+
+            
+
+            <!-- ko if: ($root.services!==undefined) -->
+
+            <h2>loaded services</h2>
+
+            <table class="table table-condensed table-hover">
+
+                <thead><tr><th>Name</th><th>Source</th></tr></thead>
+
+                <tbody>
+
+                    <!-- ko foreach: services.loaded -->
+
+                    <tr>
+
+                        <td data-bind="text: options().name"></td>
+
+                        <td data-bind="text: options().baseUrl"></td>
+
+                    </tr>
+
+                    <!-- /ko -->
+
+                </tbody>
+
+            </table>
+
+            <!-- /ko -->
+
+            
+
+        </div>
+
+    </div>
+
+    
+
+</div>

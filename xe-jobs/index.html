@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="js/libs/bootstrap/css/bootstrap.css">
+        <link rel="stylesheet" href="css/xeFeed.css">
+
+        <title>XE Feed</title>
+    </head>
+    <body>
+
+        <div class="container-fluid">
+            <div class="row-fluid">
+                <!-- FEED -->
+                <div id="xeFeed" class="span12">
+                    <div class="row-fluid">
+                        <!-- CAROUSEL -->
+                        <div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
+                            <ol class="carousel-indicators"></ol>
+                            <div class="carousel-inner"></div>
+                            
+                            <!-- Controls -->
+                            <a class="left carousel-control" href="#carousel-example-generic" data-slide="prev">
+                                <span class="glyphicon glyphicon-chevron-left"></span>
+                            </a>
+                            <a class="right carousel-control" href="#carousel-example-generic" data-slide="next">
+                                <span class="glyphicon glyphicon-chevron-right"></span>
+                            </a>
+                        </div>
+                        
+                        <div style="padding: 0px 20px;">
+                            <div style="margin: 10px 0px;">
+                                <input name="age" type="text" placeholder="Enter days old..." style="margin:0px;">
+                                <button type="button" class="btn btn-primary btn-small" onclick="APP.loadXEFeed()" id="refresh">refresh</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row-fluid">
+                <div class="span12">
+                    <div class="copyrights pull-left text-left" style="padding:0px 10px;color:#888;">
+                        <div style="font-size:10px;font-weight:bold;">Valentinos Galanos &copy; 2014. All rights reserved</div>
+                        <div style="font-size:10px;font-weight:bold;">powered by <a href="http://www.xe.gr">xe.gr</a></div>
+                    </div>
+                    <img src="css/images/xe-ergaseia.png" alt="xe" class="pull-right">
+                </div>
+            </div>
+        </div>
+
+
+        <script src="js/libs/jquery.js"></script>
+        <script src="js/libs/bootstrap/bootstrap.js"></script>
+        <script>
+             (function(win) {
+                 var $ = win.jQuery;
+                 var APP = win.APP || {};
+                 win.APP = APP;
+                 var $feed = $('#xeFeed .elements');
+                 var carousel = $('.carousel-inner');
+                 var carousel_indicators = $('.carousel-indicators');
+                 var item_tmp = $('<div>').attr({
+                     'class' : 'item'
+                 }).append($('<div class="carousel-caption"></div>'));
+                 var indicator_tmp = $('<li>').attr({
+                     'data-target' : '#carousel-example-generic',
+                     'data-slide-to' : 0
+                 });
+
+                 APP['defaults'] = {
+                     'xeFeedURL': 'xe.php',
+                     'domain': 'www.xe.gr',
+                     'pictureHolder': 'http://www.xe.gr/images/assets/no_asset.png',
+                     'rcontainer_template': $('<div>').attr({
+                         'class': 'rContainer'
+                     }),
+                     'carouselBG' : $('<img src="css/images/gray-background.jpg" alt="" style="width:100%;">')
+                         
+                 };
+
+                 APP['loadXEFeed'] = function() {
+                     $.ajax({
+                         'url': APP.defaults.xeFeedURL,
+                         'data': $.param({
+                             'age' : $('input[name=age]').val() || 1
+                         }),
+                         'beforeSend' : function(){
+                             $('button#refresh').button('loading');
+                         },
+                         'success': function(res) {
+                             var $el = $('<div>').html(res);
+                             
+                             carousel.find('.item').remove();
+                             carousel_indicators.find('li').remove();
+                             
+                             console.log('Carousel Cleaned');
+                             
+                             $el.find('.rContainer').each(function(i) {
+                                 var $self = $(this);
+
+                                 $self.find('a').each(function() {
+                                     var href = $(this).attr('href');
+                                     var nHref = 'http://' + APP.defaults.domain + href;
+                                     $(this).attr({
+                                         'href': nHref,
+                                         'target': '_blank'
+                                     });
+                                 });
+
+                                 $self.find('.rImage img').each(function() {
+                                     $(this).attr('src', APP.defaults.pictureHolder);
+                                 });
+                                 
+                                var item = item_tmp.clone();
+                                var rSummary = $self.find('.rSummary');
+                                rSummary.find('.rHeading h2').append(
+                                    $('<button class="btn btn-small pull-right" data-toggle="button">i have see this!</button>')
+                                    .on('click',function(){
+                                        var self = $(this);
+                                        if(self.hasClass('btn-success')) {
+                                            self.removeClass('btn-success');
+                                        } else {
+                                            self.addClass('btn-success');
+                                        }
+                                    })
+                                );
+                                item.find('.carousel-caption').append($self.find('.rImage'), $self.find('.rSummary'));
+                                item.append(APP.defaults.carouselBG.clone());
+                                if(carousel.find('.item').length < 1) {
+                                    item.addClass('active');
+                                    carousel_indicators.append(indicator_tmp.clone().addClass('active'));
+                                } else {
+                                    var indicator = indicator_tmp.clone();
+                                    indicator.attr('data-slide-to', i);
+                                    carousel_indicators.append(indicator);
+                                }
+                                carousel.append(item);
+                             });
+                             console.log('Feed Loaded!');
+                             $('button#refresh').button('reset');
+                         }
+                     });
+                 };
+
+                 $(win.document).ready(function(){
+                     APP.loadXEFeed();
+                 });
+             })(this);
+        </script>
+    </body>
+</html>

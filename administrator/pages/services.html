@@ -1,0 +1,94 @@
+<div class="container-fluid" id="services-panel">    
+    <div class="row-fluid">
+
+        <!-- Sidebar -->
+        
+        <div class="span3">
+            
+            <ul class="nav nav-list">
+                <li class="nav-header">options</li>
+                <li><a href="#" data-bind="click:createService">Add a service...</a></li>
+                <li><a href="#" data-bind="click:createThirdParty">Third Party SDK/API...</a></li>
+            </ul>
+            
+        </div>
+        
+        <div class="span9">
+            
+            <h3>services</h3>
+            <table class="table table-condensed">
+                <thead>
+                    <tr><th>name</th><th>baseUrl</th><th></th></tr>
+                </thead>
+                <tbody>
+                    <!-- ko foreach: loaded -->
+                    <tr>
+                        <td data-bind="text: options().name"></td>
+                        <td data-bind="text: options().baseUrl"></td>
+                        <td style="width:100px;">
+                            <div class="btn-group">
+                                <a class="btn btn-mini dropdown-toggle" data-toggle="dropdown" href="#">
+                                    <span class="icon-cog"></span> settings <span class="caret"></span>
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li><a href="#" data-bind="click: $root.createMethod">Add method...</a></li>
+                                </ul>
+                            </div>
+                        </td>
+                    </tr>
+                    <!-- /ko -->
+                </tbody>
+            </table>
+            
+            <h3>methods</h3>
+            <table class="table table-condensed">
+                <thead>
+                    <tr><th>service</th><th>name</th><th>url</th><th></th></tr>
+                </thead>
+                <tbody>
+                    <!-- ko foreach: loaded -->
+                    <!-- ko foreach: $data.methods -->
+                    <tr>
+                        <td data-bind="text: $parent.options().name"></td>
+                        <td data-bind="text: name"></td>
+                        <td data-bind="text: $parent.getMethodURL($data.name())"></td>
+                        <td style="width:100px;">
+                            <div class="btn-group">
+                                <a class="btn btn-mini" data-bind="click:$data.call">
+                                    <span class="icon-play"></span> call
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    <!-- /ko -->
+                    <!-- /ko -->
+                </tbody>
+            </table>
+            
+            <!-- ko if: hasThirdParty -->
+            <h3>third party</h3>
+            <table class="table table-condensed" id="third-party">
+                <thead>
+                    <tr><th>name</th><th>script / url</th><th></th></tr>
+                </thead>
+                <tbody>
+                    <!-- ko foreach: thirdLibs -->
+                    <tr>
+                        <td data-bind="text: name"></td>
+                        <td data-bind="text: (script() ? script : src)"></td>
+                        <td style="width:100px;">
+                            <div class="btn-group">
+                                <!-- ko if: loaded -->
+                                <div class="label label-success">loaded !</div>
+                                <!-- /ko -->
+                            </div>
+                        </td>
+                    </tr>
+                    <!-- /ko -->
+                </tbody>
+            </table>
+            <!-- /ko -->
+            
+        </div>
+    </div>
+</div>

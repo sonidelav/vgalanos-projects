@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta name="author" content="Valentinos Galanos">
+        <meta name="description" content="BFile Manager Project">
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        <link rel="stylesheet" href="js/libs/bootstrap/css/bootstrap.min.css">
+        <link rel="stylesheet" href="js/libs/video-js/video-js.css">
+        <link rel="stylesheet" href="css/file-manager.css">
+        
+        <title>File Manager</title>
+    </head>
+    <body>
+        
+        <div class="row-fluid fixed">
+            
+            <div id="contents" class="span12 left-fixed">
+                <h3>Entries</h3>
+                
+                <ul class="nav nav-pills" style="background-color:#fafafa;" id="folders"
+                    data-bind="foreach: $root.folders">
+                    <li>
+                        <a class="path-element" href="#" data-bind="text: $data.name, click:$data.open"></a>
+                    </li>
+                </ul>
+                
+                <table class="table table-condensed table-hover">
+                    <thead><tr><th>Name</th><th></th><th>Type</th><th>Size</th></tr></thead>
+                    <tbody data-bind="foreach: $root.entries">
+                        <tr>
+                            <td>
+                                <span class="icon-folder-close" data-bind="visible:$data.type()==='Directory'"></span>
+                                <a href="#" data-bind="visible: $data.type()==='Directory', text:$data.name, click:$data.open"></a>
+                                <span class="icon-file" data-bind="visible:$data.type()==='File'"></span>
+                                <span data-bind="visible: $data.type()==='File', text:$data.name" class="muted"></span>
+                            </td>
+                            <td>
+                                <div class="btn-group">
+                                    <button type="button" class="btn btn-default btn-mini dropdown-toggle" data-toggle="dropdown">
+                                        <span class="icon-cog"></span>
+                                        <span class="caret"></span>
+                                    </button>
+                                    <ul class="dropdown-menu" role="menu">
+                                        <li data-bind="css:($data.type()==='Directory' ? 'disabled' : '')">
+                                            <a href="#" data-bind="click: $data.open">Open file</a>
+                                        </li>
+                                        <li data-bind="css:($data.type()==='Directory' ? 'disabled' : '')">
+                                            <a href="#" data-bind="click: $data.download">Download</a>
+                                        </li>
+                                        <li data-bind="css:($data.type()==='Directory' ? 'disabled' : '')">
+                                            <a href="#" data-bind="click: $data.stream">Stream</a>
+                                        </li>
+                                        <li><a href="#" data-bind="click: $root.copyEntry">Copy</a></li>
+                                    </ul>
+                                </div>
+                            </td>
+                            <td data-bind="text: $data.type"></td>
+                            <td data-bind="text: $data.getSize()"></td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+            </div>
+        </div>
+        
+        
+        <!-- Contents Modal -->
+        <div class="modal fade" id="contentsModal" style="display:none;">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <h4 class="modal-title"></h4>
+                    </div>
+                    <div class="modal-body">
+                        <pre id="contents"></pre>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div><!-- /.modal -->
+        
+        <!-- Stream Modal -->
+        <div class="modal fade streamModal" style="display:none;">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <h4 class="modal-title"></h4>
+                    </div>
+                    <div class="modal-body">
+                        <video id="streamVid" class="video-js vjs-default-skin"
+                               controls preload="auto" width="640" height="240">
+                                   
+                        </video>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div><!-- /.modal -->
+        
+        <!-- Application Start -->
+        <script src="js/libs/jquery.js"></script>
+        <script src="js/libs/bootstrap/bootstrap.js"></script>
+        <script src="js/libs/knockout/knockout-min.js"></script>
+        <script src="js/libs/video-js/video.js"></script>
+        
+        <script>
+            (function(win){
+                // Dependencies
+                var $ = win.jQuery;
+                var ko = win.ko;
+                var videojs = win.videojs;
+                var APP = win.APP || {}; win.APP = APP;
+                videojs.options.flash.swf = "js/libs/video-js/video-js.swf";
+                // Web Service API
+                var API = function(){
+                    var self = this;
+                    
+                    self['getEntries'] = function(callback, root) {
+                        $.ajax({
+                            'url' : 'api.php',
+                            'data' : $.param({
+                                'func':'entries',
+                                'root': root
+                            }),
+                            'type' : 'GET',
+                            'success' : function(res) {
+                                if(callback!==undefined) callback(res);
+                            }
+                        });
+                    };
+                    
+                    self['getContents'] = function(callback, file) {
+                        $.ajax({
+                            'url' : 'api.php',
+                            'data' : $.param({
+                                'func' : 'contents',
+                                'file' : file
+                            }),
+                            'type' : 'GET',
+                            'success' : function(res) {
+                                if(callback!==undefined) callback(res);
+                            }
+                        });
+                    };
+                    
+                    self['getStream'] = function(file) {
+                        var modal = $('.streamModal').clone();
+                        modal.find('video').empty().attr({
+                            'id' : 'streamVideo'
+                        }).append(
+                            $('<source>').attr({
+                                'src':'api.php?func=stream&file='+file,
+                                'type':'video/mp4'
+                            })
+                        );
+                    
+                        modal.on('hide.bs.modal',function(){
+                            $(this).remove();
+                        });
+                        modal.appendTo('body');
+                        modal.modal('show');
+                        videojs('streamVideo');
+                    };
+                };
+                var service = new API;
+                
+                
+                // File Entry
+                var FileEntry = function(o) {
+                    var attrs = o || {},
+                        self = this;
+                    
+                    for(var prop in attrs) {
+                        self[prop] = ko.observable(attrs[prop]);
+                    }
+                    
+                    self['open'] = function(entry,ev){
+                        var $el = $(ev.target).parents('tr');
+                        
+                        if(entry.type() === 'Directory') {
+                            var root = entry.path();
+                            
+                            service.getEntries(function(res){
+                                var idx = app.folders.indexOf(self);
+                                if(idx === -1) {
+                                    app.folders.push(self);
+                                } else if(idx < app.folders().length) {
+                                    app.folders.splice(idx + 1, app.folders().length-1);
+                                }
+                                // Load Entries
+                                app.entries.removeAll();
+                                $(res).each(function(){
+                                    var f = new FileEntry(this);
+                                    app.entries.push(f);
+                                });
+                            }, root);
+                        } else if(entry.type() === 'File') {
+                            var file = entry.path();
+                            
+                            service.getContents(function(res){
+                                var modal = $('#contentsModal');
+                                modal.find('#contents').text(res);                                
+                                modal.modal('show');
+                            }, file);
+                        }
+                    }; // Open
+                    
+                    self['download'] = function(entry, ev){
+                        
+                        if(entry.type() === 'File') {
+                            var $iframe = $('<iframe>').attr({
+                                'src' : 'api.php?func=download&file=' + self.path(),
+                            }).css({
+                                'display':'none'
+                            });
+                            $('body iframe').remove();
+                            $('body').append($iframe.clone());
+                        }
+                    };
+                    
+                    self['getSize'] = function() {
+                        var val = self.size(),
+                            KB = 1024, 
+                            MB = 1024 * KB,
+                            GB = 1024 * MB;
+                        if(val > GB) {
+                            return win.Math.round(val / GB) + ' GB';
+                        } else if(val > MB) {
+                            return win.Math.round(val / MB) + ' MB';
+                        } else if(val > KB) {
+                            return win.Math.round(val / KB) + ' KB';
+                        } else {
+                            return val + ' bytes';
+                        }
+                    };
+                    
+                    self['stream'] = function(entry, ev) {
+                        if(entry.type() === 'File') {
+                            var file = entry.path();
+                            service.getStream(file);
+                        }
+                    };
+                };
+                
+                // Application
+                var Application = function() {
+                    var self = this;
+                    self['entries'] = ko.observableArray();
+                    self['folders'] = ko.observableArray();
+                    
+                    // Loading
+                    var root = new FileEntry({
+                        name:'/',type:'Directory',path:null
+                    });
+                    self.folders.push(root);
+                    
+                    service.getEntries(function(res){
+                        // Load entries...
+                        $(res).each(function(){
+                            var f = new FileEntry(this);
+                            self.entries.push(f);
+                        });
+                    });
+                };
+                var app = new Application;
+                
+                // Binding KO
+                ko.applyBindings(app);
+                
+                // Exports
+                APP['API'] = service;
+                APP['app'] = app;
+            })(this);
+        </script>
+		
+		<!-- Google Analytics -->
+		<script>
+		  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+		  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+		  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+		  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+		  ga('create', 'UA-51715456-1', 'auto');
+		  ga('send', 'pageview');
+		</script>
+    </body>
+</html>

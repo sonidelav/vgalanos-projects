@@ -1,0 +1,30 @@
+/*
+	CSS Style
+*/
+
+#header {
+	background-color: #333;
+	color: #EEE;
+	margin-bottom: 20px;
+}
+#header #header-contents {
+	padding:10px;
+}
+#header h1 {
+	margin:0px;
+}
+
+/* DEVICES */
+.device span {
+    display: inline-block;
+    width: 70%;
+    font-size: 13pt;
+    font-weight: bold;
+}
+.device .btn {
+    margin-left: 5px;
+    
+}
+.device {
+    margin: 10px 0px;
+}

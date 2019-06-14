@@ -1,0 +1,36 @@
+<div class="container-fluid" id="notice-send-demo">
+    <div class="row-fluid">
+        <div class="span12">
+            <h1>Notification Send <code>demo 1.0.0</code></h1>
+            
+            <div style="margin: 30px auto;width: 350px;padding: 40px;background-color: #F5F5F5;text-align: center;border-radius:16px;">
+                <p class="help-block">Enter a notification message and press send...</p>
+                <form id="notice-form" class="form-inline" style="margin:0px;">
+                    <input type="text" placeholder="enter message..." name="notice-msg" 
+                           data-bind="value:noticeText" class="input-xlarge">
+
+                    <button type="submit" class="btn btn-primary" data-bind="click:sendNotice">Send</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    (function(win){
+        var $ = win.jQuery;
+        var ko = win.ko;
+        var APP = win.APP;
+        
+        var NoticeSend = function(){
+            var self = this;
+            self['noticeText'] = ko.observable();
+            self['sendNotice'] = function(){
+                APP.core.notifications.newNotification('Notice Send',self.noticeText());
+                self.noticeText(null);
+            };
+        };
+
+        ko.applyBindings(new NoticeSend, $('#notice-send-demo')[0]);
+        
+    })(this);
+</script>

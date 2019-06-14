@@ -1,0 +1,105 @@
+/*
+The MIT License
+
+Copyright 2014 Valentinos Galanos <swg_lowraed@hotmail.com>.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+*/
+/* 
+    Created on : 29 Μαρ 2014, 6:20:49 μμ
+    Author     : Valentinos Galanos <swg_lowraed@hotmail.com>
+*/
+body, html, *, *:before, *:after
+{
+    box-sizing: border-box;
+    padding:0px;
+    margin:0px;
+}
+body, html {
+    background-color: #F5F5F5;
+}
+
+
+.container
+{
+    overflow: auto; zoom: 1;
+}
+
+.half-horz {
+    width: 50%;
+    margin: 5% auto;
+    border: solid 1px #c5c5c5;
+    padding: 8px;
+    background-color: #FFF;
+    
+    border-radius: 8px;
+    -webkit-border-radius: 8px;
+    -moz-border-radius: 8px;
+    
+    -webkit-box-shadow: 0px 0px 8px #aaa;
+    -moz-box-shadow: 0px 0px 8px #aaa;
+    -o-box-shadow: 0px 0px 8px #aaa;
+    box-shadow: 0px 0px 8px #aaa;
+}
+
+.counters {}
+.counters .total {
+    overflow: auto;
+}
+
+.counters ul {
+    list-style: none;
+    padding:0px; margin:0px;
+    overflow:auto; zoom:1;
+}
+.counters ul li {
+    padding: 4px;
+    margin: 4px;
+    text-align: center;
+    position: relative;
+    overflow: auto;
+}
+
+.counters .name {
+    font-size: 14px;
+    margin-bottom: 4px;
+    text-align:left;
+    border: solid 1px #e5e5e5;
+    color: #333;
+    padding: 4px 4px 4px 8px;
+}
+.counters .progress_bar {
+    position:relative;
+    float:right; width:100%;
+    background-color: #eee;
+    z-index: 0;
+}
+.counters .progress_bar .bar {
+    background-color: #ccc;
+    position: absolute;
+    top: 0px; left:0px; right:0px; bottom:0px;
+    display: block;
+}
+.counters .progress_bar span {
+    z-index: 100;
+    position: relative;
+    display: block;
+    font-size: 32px;
+    text-align:center;
+}

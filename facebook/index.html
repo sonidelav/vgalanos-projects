@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Valentinos Galanos - Portofolio - Facebook</title>
+        <meta charset="UTF-8">
+        <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css"/>
+        <link rel="stylesheet" href="css/style.css"/>
+    </head>
+    <body>
+        
+        <div class="container-fluid">
+            <div class="row-fluid">
+                <div class="span12" id="fb-api">
+                    <h1>Facebook</h1>
+					<h3>FB.API and Bootstrap</h3>
+					
+                    <!-- ko if: profile -->
+                    <div class="information">
+                        <img data-bind="attr:{src:profile().picture,alt:''}"
+                             class="profile-picture">
+                        
+                        <strong>Name:</strong>
+                        <span data-bind="text: (profile().name)"></span>
+                        <span data-bind="visible:profile().verified" 
+                              class="label label-success">Verified</span><br/>
+                              
+                        <strong>E-mail:</strong>
+                        <span data-bind="text: profile().email"></span><br/>
+                        
+                        <strong>Profile:</strong>
+                        <span><a href="#" data-bind="attr:{href:profile().link}">facebook</a></span><br/>
+                        
+                    </div>
+                    <!-- /ko -->
+                    
+                    <!-- ko if: (wall().length > 0) -->
+                    <div id="wall">
+                        <h3>Wall
+                        <button class="btn btn-sm btn-primary"
+                                style="padding-left: 10px;"
+                                data-bind="click:refresh">
+                            <span class="glyphicon glyphicon-refresh"></span>
+                            refresh</button>
+                        </h3>
+                        <ul class="posts">
+                            <!-- ko foreach: wall -->
+                            <li>
+                                <div class="post">
+                                    <div class="header">
+                                        <img data-bind="attr:{src:from().picture}">
+                                        <h5 class="name" data-bind="text:from().name"></h5>
+                                        
+                                        <!-- ko if: ($data.story!==undefined) -->
+                                            <h5 class="story" data-bind="text:story" class="muted"></h5>
+                                        <!-- /ko -->
+                                        
+                                    </div>
+                                    
+                                    <h2 data-bind="text:name"></h2>
+                                    
+                                    <!-- ko if: ($data.caption!==undefined) -->
+                                    <div class="caption" data-bind="text:caption"></div>
+                                    <!-- /ko -->
+                                    
+                                    <!-- ko if: ($data.message!==undefined) -->
+                                    <div class="message" data-bind="text:message"></div>
+                                    <!-- /ko -->
+                                    
+                                    <!-- ko if: (type()==='photo') -->
+                                    <img data-bind="attr:{src:picture}">
+                                    <!-- /ko -->
+                                    
+                                </div>
+                            </li>
+                            <!-- /ko -->
+                        </ul>
+                        
+                    </div>
+                    <!-- /ko -->
+                </div>
+                <div class="footer text-center">
+                    <small>Valentinos Galanos &copy; All rights reserved</small>
+                </div>
+            </div>
+        </div>
+        
+        <script src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
+        <script src="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+        <script src="http://cdnjs.cloudflare.com/ajax/libs/knockout/3.1.0/knockout-min.js"></script>
+        <script src="js/core.js"></script>
+    </body>
+</html>

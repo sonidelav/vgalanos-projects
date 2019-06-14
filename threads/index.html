@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<!--
+The MIT License
+
+Copyright 2014 Valentinos Galanos <swg_lowraed@hotmail.com>.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+
+
+    Created on : 29 Μαρ 2014, 6:20:49 μμ
+    Author     : Valentinos Galanos <sonidelav@hotmail.com>
+-->
+<html>
+	<head>
+		<title>Valentinos Galanos - Portofolio - Threads</title>
+
+                <link rel="stylesheet" href="style/main.css">
+
+                <script src="multitasking.js"></script>
+                <script src="third-party/jquery.js"></script>
+                <script src="third-party/knockout-dbg.js"></script>
+	</head>
+
+	<body>
+            <div class="container">
+
+                <div style="margin: 20px">
+                    <h1>Threads</h1>
+					<h3>This created with Knockout and jQuery additional libs...</h3>
+                </div>
+
+                <div class="half-horz">
+
+                    <div class="counters">
+                        <ul data-bind="foreach: $root.counters.counters">
+                            <li>
+                                <div class="name" data-bind="visible:$data.showName">
+                                    <strong data-bind="text:$data.name"></strong>
+                                </div>
+                                <div class="progress_bar">
+                                    <span data-bind="text:$data.value"></span>
+                                    <div class="bar" data-bind="attr:{style:$data.style}"></div>
+                                </div>
+                            </li>
+                        </ul>
+
+                        <div class="total" data-bind="with: totalCounter">
+                            <div class="name">
+                                    <strong data-bind="text:$data.name"></strong>
+                                </div>
+                            <div class="progress_bar">
+                                <span data-bind="text:$data.value"></span>
+                                <div class="bar" data-bind="attr:{style:$data.style}"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+				<div>
+					<div style="text-align:center;">Copyright &copy; 2015. Valentinos Galanos (sonidelav@hotmail.com). All Rights Reserved.</div>
+				</div>
+
+            </div>
+
+            <script>
+                (function(win){
+                    var $ = win.jQuery;
+                    var ko = win.ko;
+                    var RSys = win.RSys;
+
+
+                    $(win.document).ready(function(){
+                        var app = new MainModel();
+
+                        var a = new Counter(),
+                            b = new Counter(),
+                            c = new Counter(),
+                            d = new Counter();
+
+                        a.name('archive.zip');
+                        b.name('image01.jpeg');
+                        c.name('todo.tar.gzip');
+                        d.name('index.php');
+
+                        app.counters.addCounter(a);
+                        app.counters.addCounter(b);
+                        app.counters.addCounter(c);
+                        app.counters.addCounter(d);
+
+                        ko.applyBindings(app);
+                        app.counters.start();
+                    });
+
+
+                    var MainModel = function() {
+                        var self = this;
+                        self['counters'] = new CountersCollection();
+                        self['totalCounter'] = new Counter();
+
+                        self.totalCounter.name('Total %');
+
+                        new RSys.ThreadLoop({
+                            task: function(){
+                                var totalPerc = 100 * self.counters.counters().length;
+                                var sumPerc = 0;
+
+                                $.each(self.counters.counters(), function(){
+                                    sumPerc += this.value();
+                                });
+
+                                var tp = Math.round(sumPerc/totalPerc * 100);
+                                self.totalCounter.setValue(tp);
+
+                                if((sumPerc/totalPerc * 100) >= 100) {
+                                    this.stop();
+                                }
+                            },
+                            complete: function(){
+                                alert('Multi proccesses completed!');
+                            }
+                        });
+                    };
+
+                    var CountersCollection = function() {
+                        var pool = new RSys.ThreadPool();
+                        var self = this;
+
+                        self['counters'] = ko.observableArray();
+
+                        self['addCounter'] = function(counter) {
+                            counter.showName(false);
+                            self.counters.push(counter);
+                            pool.newThread(function(){
+                                var s = Math.round(Math.random() * 100);
+                                new RSys.ThreadLoop({
+                                    task: function(){
+                                        counter.setValue(this.counter);
+                                        if(this.counter === 100) { this.stop(); }
+                                        this.sleep(s);
+                                    },
+                                    complete: function(){
+                                        counter.complete();
+                                    }
+                                });
+                            });
+                        };
+
+                        self['start'] = function() {
+                            pool.runThreads();
+                        };
+                    };
+
+                    var Counter = function() {
+                        var self = this;
+                        self['value'] = ko.observable(0);
+                        self['name'] = ko.observable('Counter');
+                        self['showName'] = ko.observable(true);
+
+                        self['complete'] = function() {
+
+                        };
+                        self['setValue'] = function(v) {
+                            self.value(v);
+                            var style = 'width: ' + v + '%;';
+                            self.style(style);
+                        };
+                        self['style'] = ko.observable();
+                    };
+
+                })(this);
+            </script>
+
+			<!-- Google Analytics -->
+			<script>
+			  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+			  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+			  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+			  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+			  ga('create', 'UA-51715456-1', 'auto');
+			  ga('send', 'pageview');
+			</script>
+
+	</body>
+</html>

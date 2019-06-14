@@ -1,0 +1,46 @@
+<div class="container-fluid" id="google-maps-demo">
+    <div class="row-fluid">
+        <div class="span12">
+            <h1>Google Maps <code>demo 1.0.0</code></h1>
+            
+            <div class="map-container" style="width:100%;height:450px;"></div>
+            
+        </div>
+    </div>
+</div>
+<script>
+    (function(win){
+        var $ = win.jQuery;
+        var ko = win.ko;
+        var APP = win.APP;
+        
+        // Map view model
+        var Map = function() {
+            var self = this;
+            self['options'] = ko.observable({
+                'zoom' : 1, 
+                'center': new win.google.maps.LatLng(0,0)
+            });
+            self['map'] = ko.observable();
+            
+            self['loadMap'] = function(element) {
+                var map =
+                    new win.google.maps.Map(element, self.options());
+                self.map(map);
+            };
+        };
+        
+        
+        // google maps init function
+        win['googleMapsInit'] = function(){
+            var $el = $('#google-maps-demo .map-container');
+            var map = new Map;
+            map.options().zoom = 3;
+            map.loadMap($el[0]);
+            APP.core.thirdParty['google-map'] = map;
+        };
+        
+        // load google third sdk
+        APP.core.thirdParty.loadLib('Google Maps');
+    })(this);
+</script>
