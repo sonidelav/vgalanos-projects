@@ -4,16 +4,15 @@
 <head>
   <meta http-equiv="content-type" content="text/html; charset=UTF-8">
   <title>Online Movies Application based on vue.js</title>
-	
+
   <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/mootools/1.4.5/mootools-core-full-compat.min.js'></script>
   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mootools-more/1.4.0.1/mootools-more-yui-compressed.min.js"></script>
   <script type='text/javascript' src="https://cdnjs.cloudflare.com/ajax/libs/vue/1.0.10/vue.js"></script>
-	
+
   <style type='text/css'>
     * { padding:0px; margin:0px; outline:none; }
 
 		p.note {
-			color: 333;
 			padding: 10px 1%;
 			color: #555;
 			font-weight: bold;
@@ -65,7 +64,7 @@
   </style>
   <style>
 		.movies {
-			
+
 		}
 		.movies li {
 			float: left;
@@ -80,17 +79,17 @@
 		}
 	</style>
 </head>
-	
+
 <body>
   <section id="app">
-		
+
 		<div class="container">
 				<p class="note">Call Application TO Service:</p>
 				<ul class="list">
 					<li><a href="javascript:void(0)" class="button">Movies</a></li>
 				</ul>
 		</div>
-		
+
 		<movies></movies>
 	</section>
 
@@ -138,7 +137,7 @@
 					'onFailure': function(xhr) {
 						throw new Error('Request Failed Status = ' + xhr.status);
 						// Callback(Response, Data, Exception)
-						if (callback) 
+						if (callback)
 							callback.call(_service, xhr.responseText, params, 'Request Failed');
 					}
 				});
@@ -190,50 +189,50 @@
 
 		var lstore = new MoviesStore();
 
-		var app = new Vue({
-				el: '#app',
-				components: {
-					'movies' : {
-								template:
-									'<div>' +
-										'<h1>Page {{page}}</h1>' +
-										'<ul class="movies">' +
-											'<li v-for="item in movies">' + 
-												'<movie :item="item"></movie>' + 
-											'</li>' +
-										'</ul>' +
-									'</div>',
-								data: function() {
-										return {
-												'movies': lstore.movies,
-												'page' : lstore.pagination.page
-										}
-								},
-								components: {
-									'movie' : {
-											template:
-											'<div class="movie">' +
-												'<img :src="item.poster" style="width:auto;height:100%;">' +
-												//'<div class="poster" :style="{\'background-image\' : backgroundUrl}">' +
-												//'<h3>{{item.title}}</h3>' +
-												//'<p>{{item.plot}}</p>' +
-												'</div>' +
-											'</div>',
-										
-											props: {
-												'item': Object
-											},
-											
-											computed: {
-												backgroundUrl : function() {
-													return 'url("' + this.item.poster + '")';
-												}
-											},
-									},
-								}
-						}
-				}
-		});
+        var app = new Vue({
+            el: '#app',
+            components: {
+                'movies': {
+                    template:
+                        '<div>' +
+                            '<h1>Page {{page}}</h1>' +
+                            '<ul class="movies">' +
+                                '<li v-for="item in movies">' +
+                                    '<movie :item="item"></movie>' +
+                                '</li>' +
+                            '</ul>' +
+                        '</div>',
+                    data: function () {
+                        return {
+                            'movies': lstore.movies,
+                            'page': lstore.pagination.page
+                        }
+                    },
+                    components: {
+                        'movie': {
+                            template:
+                                '<div class="movie">' +
+                                '<img :src="item.poster" style="width:auto;height:100%;">' +
+                                    //'<div class="poster" :style="{\'background-image\' : backgroundUrl}">' +
+                                        //'<h3>{{item.title}}</h3>' +
+                                        //'<p>{{item.plot}}</p>' +
+                                    '</div>' +
+                                '</div>',
+
+                            props: {
+                                'item': Object
+                            },
+
+                            computed: {
+                                backgroundUrl: function () {
+                                    return 'url("' + this.item.poster + '")';
+                                }
+                            },
+                        },
+                    }
+                }
+            }
+        });
 
 	})(this, Class!==undefined ? this : null, Vue);
 	</script>
